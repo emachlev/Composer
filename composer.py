@@ -1,10 +1,7 @@
 import os.path
 import pickle
 import random
-from statistics import mean
-
-import samples
-from notes import Melody, AudioNote, RestNote
+import music21
 
 GENE_SIZE = 5
 
@@ -96,45 +93,26 @@ def decode_chromo(chromo):
 
 
 def get_melody_from_expression(exp):
+    # Create an empty music21 stream
+    melody = music21.stream.Stream()
     if not exp:
-        return Melody()
-    ret = Melody()
-    """
-    for i, char in enumerate(exp):
-        if char != 'R' and (i < len(exp) - 1 and exp[i + 1] == '#') and char != '#':
-            ret.append(AudioNote(char + exp[i + 1]))
-        elif char == 'R':
-            ret.append(RestNote())
-        elif char != '#':
-            ret.append(AudioNote(char))
-    """
+        return melody
+
+    # Iterate over the notes in the expression
     for note in exp:
+        # If the note is a rest, append a rest to the stream
         if note == 'R':
-            ret.append(RestNote())
+            melody.append(music21.note.Rest())
+        # Otherwise, append an audio note to the stream
         else:
-            ret.append(AudioNote(note))
-    return ret
+            melody.append(music21.note.Note(note))
+
+    return melody
 
 
 def rate(population, fitnesses):
     for i in range(POPULATION_SIZE):
         melody = get_melody_from_expression(decode_chromo(population[i]))
-        # melody.play()
-        # act = input(str(melody) + ' - Rate (1-10) or any key to hear again: ')
-        # while not act.isdigit():
-        #    melody.play()
-        #    act = input(str(melody) + ' - Rate (1-10) or any key to hear again: ')
-        try:
-            fitnesses[i] = 1 / (min([melody.difference(samples.SHAPE_OF_YOU), melody.difference(
-                samples.SOMETHING_JUST_LIKE_THIS), melody.difference(samples.FADED)])*0.8)
-            # fitnesses[i] = 1 / melody.difference(samples.SOMETHING_JUST_LIKE_THIS)
-            if fitnesses[i] > 0.8:
-                print(melody)
-                melody.play()
-        except ZeroDivisionError:
-            print(melody)
-            melody.play()
-            exit(0)
 
 
 def select_two(fitnesses):
@@ -168,7 +146,7 @@ def mutate(population, chosen):
 def main():
     population = []
     fitnesses = {}
-    if os.path.isfile('population') and os.path.isfile('fitnesses'):
+    if os.path.isfile('population') and os.path.isfile('fitnesses') and False:
         with open('population', 'rb') as pop_file:
             population = pickle.load(pop_file)
         with open('fitnesses', 'rb') as fit_file:
