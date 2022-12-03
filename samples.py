@@ -27,7 +27,7 @@ FADED = Melody([
     AudioNote('4A#'),
     AudioNote('4A#'),
     AudioNote('4A#'),
-    AudioNote('4A#'),
+    AudioNote('4C#'),
     AudioNote('4F'),
     AudioNote('4F'),
     AudioNote('4F'),
@@ -43,3 +43,7 @@ SOMETHING_JUST_LIKE_THIS = Melody([
     AudioNote('5E'),
     AudioNote('5D'),
 ])
+
+
+if __name__ == '__main__':
+    FADED.play()

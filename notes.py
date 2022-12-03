@@ -89,7 +89,7 @@ class ChordNote(Note):
 
 
 class RestNote(Note):
-    def __init__(self, time=0.2):
+    def __init__(self, time=0.1):
         self.time = time
 
     def play(self):

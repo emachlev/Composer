@@ -129,6 +129,7 @@ def rate(population, fitnesses):
             #     samples.SOMETHING_JUST_LIKE_THIS), melody.difference(samples.FADED)])*0.8)
             fitnesses[i] = 1 / melody.difference(samples.SOMETHING_JUST_LIKE_THIS)
             if fitnesses[i] > 0.8:
+                print(melody)
                 melody.play()
         except ZeroDivisionError:
             print(melody)
