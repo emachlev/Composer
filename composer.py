@@ -8,7 +8,7 @@ from notes import Melody, AudioNote, RestNote
 
 GENE_SIZE = 5
 
-MELODY_SIZE = 6
+MELODY_SIZE = 8
 
 CHROMOSOME_SIZE = GENE_SIZE * MELODY_SIZE
 
@@ -125,9 +125,9 @@ def rate(population, fitnesses):
         #    melody.play()
         #    act = input(str(melody) + ' - Rate (1-10) or any key to hear again: ')
         try:
-            # fitnesses[i] = 1 / (min([melody.difference(samples.SHAPE_OF_YOU), melody.difference(
-            #     samples.SOMETHING_JUST_LIKE_THIS), melody.difference(samples.FADED)])*0.8)
-            fitnesses[i] = 1 / melody.difference(samples.SOMETHING_JUST_LIKE_THIS)
+            fitnesses[i] = 1 / (min([melody.difference(samples.SHAPE_OF_YOU), melody.difference(
+                samples.SOMETHING_JUST_LIKE_THIS), melody.difference(samples.FADED)])*0.8)
+            # fitnesses[i] = 1 / melody.difference(samples.SOMETHING_JUST_LIKE_THIS)
             if fitnesses[i] > 0.8:
                 print(melody)
                 melody.play()
@@ -137,22 +137,8 @@ def rate(population, fitnesses):
             exit(0)
 
 
-def weighted_random_choice(choices):
-    maxv = sum(choices.values())
-    pick = random.uniform(0, maxv)
-    current = 0
-    for key, value in choices.items():
-        current += value
-        if current > pick:
-            return key
-
-
 def select_two(fitnesses):
-    i1 = weighted_random_choice(fitnesses)
-    i2 = i1
-    while i2 == i1:
-        i2 = weighted_random_choice(fitnesses)
-    return i1, i2
+    return random.choices(population=list(fitnesses.keys()), weights=fitnesses.values(), k=2)
 
 
 def crossover(population, chosen):
@@ -182,7 +168,7 @@ def mutate(population, chosen):
 def main():
     population = []
     fitnesses = {}
-    if os.path.isfile('population') and os.path.isfile('fitnesses') and False:
+    if os.path.isfile('population') and os.path.isfile('fitnesses'):
         with open('population', 'rb') as pop_file:
             population = pickle.load(pop_file)
         with open('fitnesses', 'rb') as fit_file:
@@ -196,7 +182,8 @@ def main():
         with open('fitnesses', 'wb') as fit_file:
             pickle.dump(fitnesses, fit_file)
         rate(population, fitnesses)
-        print(max(fitnesses.values()))
+        max_key = max(fitnesses, key=fitnesses.get)
+        print("Gen. {}: Best chromosome is {} with a fitness of {}".format(generation, population[max_key], fitnesses[max_key]))
         new_population = []
         while len(new_population) < POPULATION_SIZE:
             selected = select_two(fitnesses)
