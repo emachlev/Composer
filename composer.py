@@ -129,9 +129,9 @@ def get_melody_from_expression(exp):
     for note in exp:
         # If the note is a rest, append a rest to the stream
         if note == "R1":
-            melody.append(music21.note.Rest(type="quarter"))
+            melody.append(music21.note.Rest(type="quarter"))  # These rests are way to long so we treat them as short ones
         elif note == "R2":
-            melody.append(music21.note.Rest(type="eighth"))
+            melody.append(music21.note.Rest(type="eighth"))   # These rests are way to long so we treat them as short ones
         elif note == "R4":
             melody.append(music21.note.Rest(type="quarter"))
         elif note == "R8":
