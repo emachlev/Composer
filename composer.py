@@ -102,9 +102,9 @@ def get_random_chromo():
 
 
 def validate_expression(exp):
-    while exp and exp[0] == 'R':
+    while exp and exp[0].startswith('R'):
         del exp[0]
-    while exp and exp[-1] == 'R':
+    while exp and exp[-1].startswith('R'):
         del exp[-1]
     return exp
 
@@ -129,9 +129,9 @@ def get_melody_from_expression(exp):
     for note in exp:
         # If the note is a rest, append a rest to the stream
         if note == "R1":
-            melody.append(music21.note.Rest(type="whole"))
+            melody.append(music21.note.Rest(type="quarter"))
         elif note == "R2":
-            melody.append(music21.note.Rest(type="half"))
+            melody.append(music21.note.Rest(type="eighth"))
         elif note == "R4":
             melody.append(music21.note.Rest(type="quarter"))
         elif note == "R8":
@@ -240,9 +240,9 @@ def main():
         rate(population, fitnesses)
         min_key = min(fitnesses, key=fitnesses.get)
         max_key = max(fitnesses, key=fitnesses.get)
-        print("Gen. {}: Best chromosome is {} with a fitness of {}".format(generation, population[max_key],
+        print("Gen. {}: Best chromosome is {} ({}) with a fitness of {}".format(generation, population[max_key], decode_chromo(population[max_key]),
                                                                            fitnesses[max_key]))
-        print("Gen. {}: Worst chromosome is {} with a fitness of {}".format(generation, population[min_key],
+        print("Gen. {}: Worst chromosome is {} ({}) with a fitness of {}".format(generation, population[min_key], decode_chromo(population[min_key]),
                                                                             fitnesses[min_key]))
         get_melody_from_expression(decode_chromo(population[max_key])).show("midi")
         new_population = []
